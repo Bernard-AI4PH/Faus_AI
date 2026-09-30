@@ -1,0 +1,73 @@
+{
+  "name": "faus-desktop",
+  "version": "0.2.0",
+  "private": true,
+  "description": "A desktop AI companion with deliberate screen context",
+  "author": "Faus",
+  "main": "build-electron/main.js",
+  "scripts": {
+    "dev": "npm run build:electron && concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron . --dev\"",
+    "build:electron": "tsc -p electron/tsconfig.json",
+    "build": "tsc --noEmit && vite build && npm run build:electron",
+    "test": "npm run build:electron && node --test tests/*.test.cjs",
+    "dist": "npm run build && electron-builder --mac dmg --arm64",
+    "verify": "npm run build && node scripts/verify.cjs"
+  },
+  "build": {
+    "appId": "com.faus.desktop",
+    "productName": "FAUS_AI",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "build-electron/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg"
+      ],
+      "identity": null,
+      "extendInfo": {
+        "NSScreenCaptureUsageDescription": "FAUS_AI captures the window you select to provide context for your questions."
+      }
+    },
+    "dmg": {
+      "title": "Install FAUS_AI",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "lucide-react": "^1.49.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.5",
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3",
+    "prettier": "^3.9.9",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1",
+    "wait-on": "^9.5.1"
+  }
+}
